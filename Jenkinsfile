@@ -9,6 +9,16 @@ pipeline {
     ARTIFACT_ID = "elbuo8/webapp:${env.BUILD_NUMBER}"
   }
    stages {
+           stage('Start Docker Registry') {
+            steps {
+                script {
+                    // Iniciar el registro de Docker
+                    sh '''
+                    docker run -d -p 5000:5000 --restart=always --name registry registry:2
+                    '''
+                }
+            }
+        }
    stage('Building image') {
       steps{
           sh '''
@@ -41,6 +51,11 @@ pipeline {
       }
     }
 }
+
+
+
+    
+  
 
 
 
