@@ -12,10 +12,18 @@ pipeline {
            stage('Start Docker Registry') {
             steps {
                 script {
-                    // Iniciar el registro de Docker
-                    sh '''
-                    docker run -d -p 5000:5000 --restart=always --name registry registry:2
-                    '''
+                     // Verificar si el contenedor del registro de Docker ya está creado
+            def registryExists = sh(script: "docker ps -a --filter 'name=registry' --format '{{.Names}}'", returnStdout: true).trim()
+
+            if (registryExists == 'registry') {
+                echo 'registry de Docker ya está creado. Continuando...'
+            } else {
+                // Iniciar el registro de Docker
+                sh '''
+                docker run -d -p 5000:5000 --restart=always --name registry registry:2
+                '''
+              echo 'Se inicio registry de docker'
+                  }
                 }
             }
         }
@@ -51,11 +59,6 @@ pipeline {
       }
     }
 }
-
-
-
-    
-  
 
 
 
